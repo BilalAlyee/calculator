@@ -1,7 +1,40 @@
+"""
+Mathematical evaluation module for the Scientific Calculator.
+
+This module provides safe expression evaluation with support for:
+- Trigonometric functions (sin, cos, tan, asin, acos, atan)
+- Hyperbolic functions (sinh, cosh, tanh)  
+- Logarithmic functions (log, ln, exp)
+- Root functions (sqrt, cbrt)
+- Other functions (abs, factorial, modulo, etc.)
+- Mathematical constants (pi, e)
+
+Author: Bilal Alyee
+License: MIT
+"""
+
 import math
 
 
 def safe_eval(expression, x_value=None, angle_mode='deg'):
+    """
+    Safely evaluate a mathematical expression.
+    
+    Args:
+        expression (str): Mathematical expression to evaluate
+        x_value (float, optional): Value for variable 'x' in expressions
+        angle_mode (str): 'deg' for degrees, 'rad' for radians (default: 'deg')
+    
+    Returns:
+        float: Result of the expression evaluation
+    
+    Raises:
+        ValueError: If expression is invalid
+        ZeroDivisionError: If division by zero occurs
+        OverflowError: If result is too large
+    """
+    
+    # Define angle conversion functions
     def sin_fn(x):
         return math.sin(math.radians(x) if angle_mode == 'deg' else x)
 
@@ -24,24 +57,48 @@ def safe_eval(expression, x_value=None, angle_mode='deg'):
         return math.degrees(res) if angle_mode == 'deg' else res
     
     def cbrt_fn(x):
+        """Cube root function that handles negative numbers."""
         return -(-x) ** (1/3) if x < 0 else x ** (1/3)
     
     def fact_fn(x):
+        """Factorial function."""
         return math.factorial(int(x))
 
+    # Whitelist of allowed functions and constants
     safe_names = {
+        # Trigonometric functions
         'sin': sin_fn, 'cos': cos_fn, 'tan': tan_fn,
         'asin': asin_fn, 'acos': acos_fn, 'atan': atan_fn,
+        
+        # Hyperbolic functions
         'sinh': math.sinh, 'cosh': math.cosh, 'tanh': math.tanh,
-        'sqrt': math.sqrt, 'cbrt': cbrt_fn, 'log': math.log10, 'ln': math.log,
-        'exp': math.exp, 'abs': abs, 'round': round, 'pow': pow, 'fact': fact_fn,
+        
+        # Root and logarithmic functions
+        'sqrt': math.sqrt, 'cbrt': cbrt_fn, 
+        'log': math.log10, 'ln': math.log,
+        'exp': math.exp,
+        
+        # Other functions
+        'abs': abs, 'round': round, 'pow': pow, 
+        'fact': fact_fn,
+        
+        # Mathematical constants
         'pi': math.pi, 'e': math.e,
+        
+        # Utility functions
         'sum': sum, 'min': min, 'max': max,
         'mod': lambda a, b: a % b,
         'int': int, 'float': float,
+        
+        # Variable
         'x': x_value,
     }
-    return eval(expression, {'__builtins__': None}, safe_names)
+    
+    # Evaluate expression with restricted namespace
+    # '__builtins__': None prevents access to built-in functions not in safe_names
+    result = eval(expression, {'__builtins__': None}, safe_names)
+    
+    return result
 
 
 def derivative(expr, point, x_value=None, angle_mode='deg'):
