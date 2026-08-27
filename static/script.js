@@ -1,10 +1,11 @@
-// State
+// State - supports unlimited calculations
 const state = {
     display: document.getElementById('display'),
     currentInput: '',
     lastResult: null,
     history: [],
-    locale: navigator.language || 'en-US'
+    locale: navigator.language || 'en-US',
+    maxInputLength: 10000  // Allow very long expressions
 };
 
 // Initialize
@@ -30,8 +31,10 @@ function loadHistory() {
 
 // Input functions
 function appendNumber(num) {
-    state.currentInput += num;
-    updateDisplay();
+    if (state.currentInput.length < state.maxInputLength) {
+        state.currentInput += num;
+        updateDisplay();
+    }
 }
 
 function appendOperator(op) {
@@ -45,12 +48,14 @@ function appendOperator(op) {
 }
 
 function appendFunction(func) {
-    if (func === 'fact') {
-        state.currentInput += '!';
-    } else {
-        state.currentInput += func + '(';
+    if (state.currentInput.length < state.maxInputLength - 5) {
+        if (func === 'fact') {
+            state.currentInput += '!';
+        } else {
+            state.currentInput += func + '(';
+        }
+        updateDisplay();
     }
-    updateDisplay();
 }
 
 function appendValue(value) {

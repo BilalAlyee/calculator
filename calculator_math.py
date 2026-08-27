@@ -8,17 +8,22 @@ This module provides safe expression evaluation with support for:
 - Root functions (sqrt, cbrt)
 - Other functions (abs, factorial, modulo, etc.)
 - Mathematical constants (pi, e)
+- Arbitrary precision arithmetic (Decimal)
 
 Author: Bilal Alyee
 License: MIT
 """
 
 import math
+from decimal import Decimal, getcontext
+
+# Set precision to 50 decimal places for large numbers
+getcontext().prec = 50
 
 
 def safe_eval(expression, x_value=None, angle_mode='deg'):
     """
-    Safely evaluate a mathematical expression.
+    Safely evaluate a mathematical expression with arbitrary precision.
     
     Args:
         expression (str): Mathematical expression to evaluate
@@ -34,35 +39,60 @@ def safe_eval(expression, x_value=None, angle_mode='deg'):
         OverflowError: If result is too large
     """
     
-    # Define angle conversion functions
+    # Convert angle mode functions
     def sin_fn(x):
+        x = float(x)
         return math.sin(math.radians(x) if angle_mode == 'deg' else x)
 
     def cos_fn(x):
+        x = float(x)
         return math.cos(math.radians(x) if angle_mode == 'deg' else x)
 
     def tan_fn(x):
+        x = float(x)
         return math.tan(math.radians(x) if angle_mode == 'deg' else x)
 
     def asin_fn(x):
+        x = float(x)
         res = math.asin(x)
         return math.degrees(res) if angle_mode == 'deg' else res
 
     def acos_fn(x):
+        x = float(x)
         res = math.acos(x)
         return math.degrees(res) if angle_mode == 'deg' else res
 
     def atan_fn(x):
+        x = float(x)
         res = math.atan(x)
         return math.degrees(res) if angle_mode == 'deg' else res
     
     def cbrt_fn(x):
         """Cube root function that handles negative numbers."""
+        x = float(x)
         return -(-x) ** (1/3) if x < 0 else x ** (1/3)
     
     def fact_fn(x):
         """Factorial function."""
         return math.factorial(int(x))
+    
+    def decimal_mul(a, b):
+        """Multiply with decimal precision."""
+        return float(Decimal(str(a)) * Decimal(str(b)))
+    
+    def decimal_div(a, b):
+        """Divide with decimal precision."""
+        if b == 0:
+            raise ZeroDivisionError("Division by zero")
+        return float(Decimal(str(a)) / Decimal(str(b)))
+    
+    def decimal_add(a, b):
+        """Add with decimal precision."""
+        return float(Decimal(str(a)) + Decimal(str(b)))
+    
+    def decimal_sub(a, b):
+        """Subtract with decimal precision."""
+        return float(Decimal(str(a)) - Decimal(str(b)))
 
     # Whitelist of allowed functions and constants
     safe_names = {
@@ -87,18 +117,35 @@ def safe_eval(expression, x_value=None, angle_mode='deg'):
         
         # Utility functions
         'sum': sum, 'min': min, 'max': max,
-        'mod': lambda a, b: a % b,
+        'mod': lambda a, b: int(Decimal(str(a))) % int(Decimal(str(b))),
         'int': int, 'float': float,
+        'Decimal': Decimal,
         
         # Variable
         'x': x_value,
     }
     
+    # Validate expression length (prevent excessively long strings)
+    if len(expression) > 10000:
+        raise ValueError("Expression too long (max 10000 characters)")
+    
     # Evaluate expression with restricted namespace
     # '__builtins__': None prevents access to built-in functions not in safe_names
-    result = eval(expression, {'__builtins__': None}, safe_names)
+    try:
+        result = eval(expression, {'__builtins__': None}, safe_names)
+        
+        # Convert Decimal back to float if needed
+        if isinstance(result, Decimal):
+            result = float(result)
+        
+        return result
     
-    return result
+    except ZeroDivisionError:
+        raise ZeroDivisionError("Cannot divide by zero")
+    except ValueError as e:
+        raise ValueError(f"Invalid calculation: {str(e)}")
+    except Exception as e:
+        raise ValueError(f"Calculation error: {str(e)}")
 
 
 def derivative(expr, point, x_value=None, angle_mode='deg'):

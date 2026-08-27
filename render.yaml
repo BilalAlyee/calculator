@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: calculator
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    region: south-asia
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"

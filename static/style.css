@@ -182,9 +182,14 @@ body {
     text-align: right;
     font-weight: 500;
     margin-bottom: 10px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    text-overflow: clip;
+    word-break: break-all;
+    max-height: 100px;
+    font-family: 'Courier New', monospace;
+    scroll-behavior: smooth;
 }
 
 .display:focus {
