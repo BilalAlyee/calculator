@@ -12,6 +12,8 @@ from calculator_math import evaluate_expression
 
 def run_cli():
     angle_mode = 'deg'
+    print('Welcome to the Calculator CLI!')
+    print('You can type math expressions and commands manually.')
     print('Fallback console calculator running.')
     print('Type expressions (or QUIT/EXIT).')
     print('Use MODE DEG or MODE RAD to switch angle mode.')

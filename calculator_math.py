@@ -22,13 +22,19 @@ def safe_eval(expression, x_value=None, angle_mode='deg'):
     def atan_fn(x):
         res = math.atan(x)
         return math.degrees(res) if angle_mode == 'deg' else res
+    
+    def cbrt_fn(x):
+        return -(-x) ** (1/3) if x < 0 else x ** (1/3)
+    
+    def fact_fn(x):
+        return math.factorial(int(x))
 
     safe_names = {
         'sin': sin_fn, 'cos': cos_fn, 'tan': tan_fn,
         'asin': asin_fn, 'acos': acos_fn, 'atan': atan_fn,
         'sinh': math.sinh, 'cosh': math.cosh, 'tanh': math.tanh,
-        'sqrt': math.sqrt, 'log': math.log10, 'ln': math.log,
-        'exp': math.exp, 'abs': abs, 'round': round, 'pow': pow,
+        'sqrt': math.sqrt, 'cbrt': cbrt_fn, 'log': math.log10, 'ln': math.log,
+        'exp': math.exp, 'abs': abs, 'round': round, 'pow': pow, 'fact': fact_fn,
         'pi': math.pi, 'e': math.e,
         'sum': sum, 'min': min, 'max': max,
         'mod': lambda a, b: a % b,

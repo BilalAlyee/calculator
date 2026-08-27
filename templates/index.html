@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="calculator-wrapper">
+        <div class="history-toggle">
+            <button class="toggle-btn" onclick="toggleHistory()">📋 History</button>
+        </div>
+        
+        <div class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <h3>Calculation History</h3>
+                <button class="close-btn" onclick="toggleHistory()">✕</button>
+            </div>
+            <div class="history-list" id="historyList"></div>
+            <div class="history-footer">
+                <button class="clear-history-btn" onclick="clearHistory()">Clear All</button>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <div class="display-section">
+                <input type="text" id="display" class="display" placeholder="0" readonly>
+                <div class="mode-controls">
+                    <label class="mode-label">
+                        <input type="radio" name="angle_mode" value="deg" checked> DEG
+                    </label>
+                    <label class="mode-label">
+                        <input type="radio" name="angle_mode" value="rad"> RAD
+                    </label>
+                </div>
+            </div>
+
+            <div class="calculator-grid">
+                <!-- Row 1 -->
+                <button class="btn func-btn" onclick="appendFunction('sin')">sin</button>
+                <button class="btn func-btn" onclick="appendFunction('cos')">cos</button>
+                <button class="btn func-btn" onclick="appendFunction('tan')">tan</button>
+                <button class="btn op-btn" onclick="appendOperator('/')">÷</button>
+                <button class="btn op-btn" onclick="appendOperator('*')">×</button>
+                <button class="btn clear-btn" onclick="clearDisplay()">C</button>
+
+                <!-- Row 2 -->
+                <button class="btn func-btn" onclick="appendFunction('asin')">asin</button>
+                <button class="btn func-btn" onclick="appendFunction('acos')">acos</button>
+                <button class="btn func-btn" onclick="appendFunction('atan')">atan</button>
+                <button class="btn num-btn" onclick="appendNumber('7')">7</button>
+                <button class="btn num-btn" onclick="appendNumber('8')">8</button>
+                <button class="btn num-btn" onclick="appendNumber('9')">9</button>
+
+                <!-- Row 3 -->
+                <button class="btn func-btn" onclick="appendFunction('log')">log</button>
+                <button class="btn func-btn" onclick="appendFunction('ln')">ln</button>
+                <button class="btn func-btn" onclick="appendFunction('sqrt')">√</button>
+                <button class="btn num-btn" onclick="appendNumber('4')">4</button>
+                <button class="btn num-btn" onclick="appendNumber('5')">5</button>
+                <button class="btn num-btn" onclick="appendNumber('6')">6</button>
+
+                <!-- Row 4 -->
+                <button class="btn func-btn" onclick="appendFunction('exp')">e^x</button>
+                <button class="btn func-btn" onclick="appendFunction('cbrt')">∛</button>
+                <button class="btn op-btn" onclick="appendOperator('^')">x^y</button>
+                <button class="btn num-btn" onclick="appendNumber('1')">1</button>
+                <button class="btn num-btn" onclick="appendNumber('2')">2</button>
+                <button class="btn num-btn" onclick="appendNumber('3')">3</button>
+
+                <!-- Row 5 -->
+                <button class="btn func-btn" onclick="appendValue('pi')">π</button>
+                <button class="btn func-btn" onclick="appendValue('e')">e</button>
+                <button class="btn func-btn" onclick="appendFunction('abs')">|x|</button>
+                <button class="btn num-btn" onclick="appendNumber('0')">0</button>
+                <button class="btn num-btn" onclick="appendDecimal('.')">.</button>
+                <button class="btn del-btn" onclick="deleteCharacter()">DEL</button>
+
+                <!-- Row 6 -->
+                <button class="btn func-btn" onclick="appendOpenParen('(')">(</button>
+                <button class="btn func-btn" onclick="appendCloseParen(')')">)</button>
+                <button class="btn op-btn" onclick="appendOperator('-')">−</button>
+                <button class="btn op-btn" onclick="appendOperator('+')">+</button>
+                <button class="btn func-btn" onclick="appendFunction('fact')">n!</button>
+                <button class="btn equals-btn" onclick="calculate()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
